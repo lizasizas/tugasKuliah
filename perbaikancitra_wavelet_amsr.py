@@ -30,10 +30,13 @@ def apply_amsr(image, scales=[70, 110, 120], scale_weights=[0.9, 0.5, 0.9], gain
     retinex = np.clip(retinex, 0, 255).astype(np.uint8)
     return retinex
 
-from skimage.metrics import structural_similarity as ssim
-
-def calculate_ssim(original, enhanced):
-    return ssim(original, enhanced, data_range=255)
+# Function to compute PSNR
+def calculate_psnr(original, processed):
+    mse = np.mean((original.astype(np.float32) - processed.astype(np.float32)) ** 2)
+    if mse == 0:
+        return float('inf')
+    psnr = 20 * np.log10(255.0 / np.sqrt(mse))
+    return psnr
 
 # Function to display images in 3 columns
 def display_images_3col(original, wavelet, wavelet_amsr):
